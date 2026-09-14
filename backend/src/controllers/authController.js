@@ -3,7 +3,20 @@ const { signToken } = require('../utils/jwt');
 const { registerSchema, loginSchema, updateProfileSchema } = require('../validators/authValidators');
 const { ApiError } = require('../middlewares/errorHandler');
 
-// Valida os dados, cria uma conta e retorna o usuário com seu token de acesso.
+// Mantém o formato de erro existente sem registrar SQL ou valores de credenciais.
+function handleAuthError(err, res, next) {
+  if (err.name === 'SequelizeUniqueConstraintError') {
+    return res.status(409).json({ message: 'Já existe uma conta com este e-mail.' });
+  }
+  if (err.name === 'SequelizeDatabaseError' || err.name.startsWith('SequelizeConnection')
+    || err.name === 'SequelizeHostNotFoundError' || err.name === 'SequelizeHostNotReachableError'
+    || err.name === 'SequelizeAccessDeniedError') {
+    return res.status(503).json({ message: 'Serviço de contas indisponível. Tente novamente mais tarde.' });
+  }
+  return next(err);
+}
+
+// Protótipo parcial: retorna JWT sem confirmação de e-mail (feature futura).
 async function register(req, res, next) {
   try {
     const data = registerSchema.parse(req.body);
@@ -13,12 +26,19 @@ async function register(req, res, next) {
       return res.status(409).json({ message: 'Já existe uma conta com este e-mail.' });
     }
 
-    const user = await User.create(data);
+    // Compatibilidade temporária com o ENUM existente, sem alterar o banco.
+    // Nunca aceite role do cliente nem atribua seller/admin no cadastro público.
+    const user = await User.create({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      role: 'customer',
+    });
     const token = signToken({ sub: user.id, role: user.role });
 
     res.status(201).json({ user: user.toSafeJSON(), token });
   } catch (err) {
-    next(err);
+    handleAuthError(err, res, next);
   }
 }
 
@@ -42,7 +62,7 @@ async function login(req, res, next) {
     const token = signToken({ sub: user.id, role: user.role });
     res.json({ user: user.toSafeJSON(), token });
   } catch (err) {
-    next(err);
+    handleAuthError(err, res, next);
   }
 }
 

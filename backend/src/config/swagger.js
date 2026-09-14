@@ -56,11 +56,12 @@ const definition = {
       RegisterInput: {
         type: 'object',
         required: ['name', 'email', 'password'],
+        additionalProperties: false,
+        description: 'Protótipo parcial: name obrigatório por compatibilidade com users; role fixado em customer. Sem confirmação de e-mail ou restrição de domínio nesta etapa.',
         properties: {
-          name: { type: 'string', example: 'Maria Silva' },
-          email: { type: 'string', format: 'email', example: 'maria@exemplo.com' },
-          password: { type: 'string', format: 'password', minLength: 8, example: 'senhaSegura123' },
-          role: { type: 'string', enum: ['customer', 'seller'], default: 'customer' },
+          name: { type: 'string', minLength: 1, maxLength: 100, example: 'Maria Silva' },
+          email: { type: 'string', format: 'email', maxLength: 255, example: 'maria@example.com' },
+          password: { type: 'string', format: 'password', minLength: 8, maxLength: 72, description: 'Ao menos uma letra e um número; máximo de 72 bytes UTF-8 (acentos podem ocupar mais de um byte).', example: 'SenhaTeste123' },
         },
       },
       LoginInput: {
@@ -78,7 +79,7 @@ const definition = {
         properties: {
           name: { type: 'string', example: 'Maria Silva' },
           email: { type: 'string', format: 'email', example: 'maria@exemplo.com' },
-          password: { type: 'string', format: 'password', minLength: 8, example: 'novaSenhaSegura123' },
+          password: { type: 'string', format: 'password', minLength: 8, maxLength: 72, description: 'Ao menos uma letra e um número; máximo de 72 bytes UTF-8.', example: 'novaSenhaSegura123' },
           currentPassword: { type: 'string', format: 'password', example: 'senhaSegura123' },
         },
       },

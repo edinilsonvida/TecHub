@@ -18,7 +18,8 @@ const authLimiter = rateLimit({
  * /auth/register:
  *   post:
  *     tags: [Auth]
- *     summary: Cria uma nova conta (comprador ou vendedor)
+ *     summary: Cadastro básico Tech Hub (protótipo parcial)
+ *     description: Exige nome por compatibilidade com a tabela herdada. Papel customer fixado pelo servidor. Retorna JWT sem confirmação de e-mail; domínio institucional ainda não validado.
  *     requestBody:
  *       required: true
  *       content:
@@ -26,10 +27,16 @@ const authLimiter = rateLimit({
  *           schema: { $ref: '#/components/schemas/RegisterInput' }
  *     responses:
  *       201:
- *         description: Conta criada
+ *         description: Conta criada e JWT emitido (sem confirmação de e-mail neste protótipo)
  *         content:
  *           application/json:
  *             schema: { $ref: '#/components/schemas/AuthResponse' }
+ *       400:
+ *         description: Campos inválidos ou extras (incluindo role)
+ *       429:
+ *         description: Limite de requisições por IP excedido
+ *       503:
+ *         description: Banco ou tabela de usuários indisponível
  *       409:
  *         description: E-mail já cadastrado
  *         content:
@@ -55,6 +62,12 @@ router.post('/register', authLimiter, authController.register);
  *         content:
  *           application/json:
  *             schema: { $ref: '#/components/schemas/AuthResponse' }
+ *       400:
+ *         description: E-mail malformado ou senha ausente
+ *       429:
+ *         description: Limite de requisições por IP excedido
+ *       503:
+ *         description: Banco ou tabela de usuários indisponível
  *       401:
  *         description: Credenciais inválidas
  *         content:
