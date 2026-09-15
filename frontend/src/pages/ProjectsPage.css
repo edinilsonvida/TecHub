@@ -740,3 +740,46 @@
     flex-wrap: wrap;
   }
 }
+
+/* Botão X dos filtros ativos de Curso, Fase e Tecnologias */
+.projects-page button[aria-label^="Remover filtro"] {
+  width: 24px !important;
+  min-width: 24px !important;
+  height: 24px !important;
+  min-height: 24px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+
+  background: rgb(16 18 16 / 15%) !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  box-shadow: none !important;
+
+  color: inherit !important;
+  font-family: Arial, sans-serif;
+  font-size: 0.95rem !important;
+  font-weight: 700;
+  line-height: 1 !important;
+
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.projects-page button[aria-label^="Remover filtro"]:hover {
+  background: #17191a !important;
+  color: #78dc50 !important;
+  transform: scale(1.08);
+}
+
+.projects-page button[aria-label^="Remover filtro"]:focus-visible {
+  outline: 2px solid #78dc50;
+  outline-offset: 2px;
+}
