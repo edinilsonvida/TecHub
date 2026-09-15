@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
+import NewProjectPage from './pages/NewProjectPage';
 
 import PrivateRoute from './components/PrivateRoute';
 import EmptyState from './components/EmptyState';
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/cadastro" element={<SignUpPage />} />
+          <Route path="/projeto/novo" element={<NewProjectPage />} />
 
           <Route element={<PrivateRoute />}>
             <Route path="/cart" element={<Cart />} />
