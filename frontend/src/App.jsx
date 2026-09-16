@@ -8,7 +8,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Favorites from "./pages/Favorites";
 import HomePage from "./pages/HomePage";
-import Login from "./pages/Login";
+import LoginPage from "./pages/LoginPage";
 import NewProjectPage from "./pages/NewProjectPage";
 import OrderDetail from "./pages/OrderDetail";
 import Orders from "./pages/Orders";
@@ -23,7 +23,7 @@ export default function App() {
     <div className="app-shell">
       <Header />
 
-      <div className="app-content">
+      <main className="app-content">
         <Routes>
           <Route path="/" element={<HomePage />} />
 
@@ -31,9 +31,9 @@ export default function App() {
           <Route path="/projeto/novo" element={<NewProjectPage />} />
 
           <Route path="/cadastro" element={<SignUpPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<LoginPage />} />
 
+          <Route path="/register" element={<Register />} />
           <Route path="/products/:id" element={<ProductDetail />} />
 
           <Route element={<PrivateRoute />}>
@@ -56,7 +56,7 @@ export default function App() {
             }
           />
         </Routes>
-      </div>
+      </main>
     </div>
   );
 }

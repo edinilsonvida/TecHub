@@ -1,52 +1,60 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import "./SignUpPage.css";
 
-const initialForm = {
+const INITIAL_FORM = {
   username: "",
   email: "",
   password: "",
   confirmPassword: "",
 };
 
-function validateForm(form) {
-  const errors = {};
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  if (!form.username.trim()) {
-    errors.username = "O nome de usuário é obrigatório.";
-  } else if (form.username.trim().length < 3) {
-    errors.username = "Informe pelo menos 3 caracteres.";
+function validateForm(form) {
+  const validationErrors = {};
+
+  const username = form.username.trim();
+  const email = form.email.trim();
+
+  if (!username) {
+    validationErrors.username = "O nome de usuário é obrigatório.";
+  } else if (username.length < 3) {
+    validationErrors.username = "Informe pelo menos 3 caracteres.";
   }
 
-  if (!form.email.trim()) {
-    errors.email = "O e-mail é obrigatório.";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-    errors.email = "Digite um e-mail válido.";
+  if (!email) {
+    validationErrors.email = "O e-mail é obrigatório.";
+  } else if (!EMAIL_REGEX.test(email)) {
+    validationErrors.email = "Digite um e-mail válido.";
   }
 
   if (!form.password) {
-    errors.password = "A senha é obrigatória.";
+    validationErrors.password = "A senha é obrigatória.";
   } else if (form.password.length < 8) {
-    errors.password = "A senha deve ter pelo menos 8 caracteres.";
+    validationErrors.password =
+      "A senha deve ter pelo menos 8 caracteres.";
   } else if (
     !/[A-Za-z]/.test(form.password) ||
     !/[0-9]/.test(form.password)
   ) {
-    errors.password = "A senha deve conter pelo menos uma letra e um número.";
+    validationErrors.password =
+      "A senha deve conter pelo menos uma letra e um número.";
   }
 
   if (!form.confirmPassword) {
-    errors.confirmPassword = "Confirme sua senha.";
+    validationErrors.confirmPassword = "Confirme sua senha.";
   } else if (form.confirmPassword !== form.password) {
-    errors.confirmPassword = "As senhas não coincidem.";
+    validationErrors.confirmPassword = "As senhas não coincidem.";
   }
 
-  return errors;
+  return validationErrors;
 }
 
 export default function SignUpPage() {
   const [accountType, setAccountType] = useState("criador");
-  const [form, setForm] = useState(initialForm);
+  const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -83,14 +91,14 @@ export default function SignUpPage() {
     const validationErrors = validateForm(form);
 
     setErrors(validationErrors);
+    setSuccessMessage("");
 
     if (Object.keys(validationErrors).length > 0) {
-      setSuccessMessage("");
       return;
     }
 
     setSuccessMessage(
-      "Dados validados com sucesso! A integração do cadastro será realizada em uma próxima Sprint.",
+      "Dados validados com sucesso! A integração do cadastro será realizada em uma próxima etapa.",
     );
   }
 
@@ -98,7 +106,11 @@ export default function SignUpPage() {
     <main className="signup-page">
       <h1 className="signup-page__title">Nova conta</h1>
 
-      <form className="signup-form" onSubmit={handleSubmit} noValidate>
+      <form
+        className="signup-form"
+        onSubmit={handleSubmit}
+        noValidate
+      >
         <fieldset className="signup-form__account-type">
           <legend>Selecione o tipo da conta</legend>
 
@@ -164,6 +176,7 @@ export default function SignUpPage() {
             {accountType === "criador"
               ? "E-mail institucional do IFSC"
               : "E-mail"}
+
             <span aria-hidden="true">*</span>
           </label>
 
@@ -180,7 +193,9 @@ export default function SignUpPage() {
             }
             className={errors.email ? "is-invalid" : ""}
             aria-invalid={Boolean(errors.email)}
-            aria-describedby={errors.email ? "email-error" : undefined}
+            aria-describedby={
+              errors.email ? "email-error" : undefined
+            }
             autoComplete="email"
             required
           />
@@ -211,7 +226,9 @@ export default function SignUpPage() {
             className={errors.password ? "is-invalid" : ""}
             aria-invalid={Boolean(errors.password)}
             aria-describedby={
-              errors.password ? "password-error" : "password-help"
+              errors.password
+                ? "password-error"
+                : "password-help"
             }
             autoComplete="new-password"
             required
@@ -226,8 +243,12 @@ export default function SignUpPage() {
               {errors.password}
             </span>
           ) : (
-            <span id="password-help" className="signup-form__helper">
-              Mínimo de 8 caracteres, contendo pelo menos uma letra e um número.
+            <span
+              id="password-help"
+              className="signup-form__helper"
+            >
+              Mínimo de 8 caracteres, contendo pelo menos uma letra e
+              um número.
             </span>
           )}
         </div>
@@ -267,21 +288,26 @@ export default function SignUpPage() {
         </div>
 
         {successMessage && (
-          <p className="signup-form__success" role="status" aria-live="polite">
+          <p
+            className="signup-form__success"
+            role="status"
+            aria-live="polite"
+          >
             {successMessage}
           </p>
         )}
 
         <div className="signup-form__actions">
-          <button type="submit" className="signup-form__submit">
+          <button
+            type="submit"
+            className="signup-form__submit"
+          >
             Criar conta
           </button>
 
           <p className="signup-form__login">
             Já possui uma conta?{" "}
-            <button type="button" disabled>
-              Entrar
-            </button>
+            <Link to="/login">Entrar</Link>
           </p>
         </div>
       </form>
