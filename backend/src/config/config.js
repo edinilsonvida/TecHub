@@ -38,7 +38,14 @@ function configuration(production) {
       throw new Error('Não foi possível ler o certificado indicado em DB_SSL_CA_FILE.');
     }
   }
-  return { ...base, dialectOptions: { ssl } };
+  return {
+    ...base, dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      }
+    }
+  };
 }
 module.exports = {
   development: configuration(false),

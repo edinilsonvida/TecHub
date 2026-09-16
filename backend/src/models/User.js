@@ -45,18 +45,18 @@ User.init(
       allowNull: false,
       defaultValue: 'customer',
     },
-    isEmailVerified: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    emailVerificationToken: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    emailVerificationExpires: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
+    // isEmailVerified: {
+    //   type: DataTypes.BOOLEAN,
+    //   defaultValue: false,
+    // },
+    // emailVerificationToken: {
+    //   type: DataTypes.STRING,
+    //   allowNull: true,
+    // },
+    // emailVerificationExpires: {
+    //   type: DataTypes.DATE,
+    //   allowNull: true,
+    // },
   },
   {
     sequelize,

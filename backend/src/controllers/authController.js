@@ -29,8 +29,8 @@ async function register(req, res, next) {
     }
 
     // Gera token seguro e define validade de 24h
-    const verificationToken = crypto.randomBytes(32).toString('hex');
-    const tokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    // const verificationToken = crypto.randomBytes(32).toString('hex');
+    // const tokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     // Compatibilidade temporária com o ENUM existente, sem alterar o banco.
     // Nunca aceite role do cliente nem atribua seller/admin no cadastro público.
@@ -39,13 +39,13 @@ async function register(req, res, next) {
       email: data.email.toLowerCase(),
       password: data.password,
       role: 'customer',
-      isEmailVerified: false,
-      emailVerificationToken: verificationToken,
-      emailVerificationExpires: tokenExpires,
+      // isEmailVerified: false,
+      // emailVerificationToken: verificationToken,
+      // emailVerificationExpires: tokenExpires,
     });
 
     // Envia o e-mail ANTES de responder a requisição
-    await sendVerificationEmail(user.email, verificationToken);
+    //await sendVerificationEmail(user.email, verificationToken);
 
     // Responde sem token de sessão (exige confirmação antes do login)
     res.status(201).json({
@@ -77,11 +77,11 @@ async function login(req, res, next) {
       return res.status(401).json(genericError);
     }
 
-    if (!user.isEmailVerified) {
-      return res.status(403).json({
-        message: 'Confirme seu e-mail antes de acessar a plataforma.'
-      });
-    }
+    // if (!user.isEmailVerified) {
+    //   return res.status(403).json({
+    //     message: 'Confirme seu e-mail antes de acessar a plataforma.'
+    //   });
+    // }
 
     const token = signToken({ sub: user.id, role: user.role });
     res.json({ user: user.toSafeJSON(), token });
