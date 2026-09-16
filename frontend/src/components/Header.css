@@ -207,3 +207,46 @@
     width: 100%;
   }
 }
+
+/* Link para a página de login */
+.site-header .site-header__login {
+  min-width: 96px;
+  min-height: 36px;
+  padding: 0.45rem 1.125rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border: 1px solid #ffffff;
+  border-radius: 6px;
+
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.site-header .site-header__login:hover,
+.site-header .site-header__login.is-active {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #17181a;
+}
+
+.site-header .site-header__login:focus-visible {
+  outline: 2px solid #78dc50;
+  outline-offset: 3px;
+}
+
+@media (max-width: 768px) {
+  .site-header .site-header__login {
+    width: 100%;
+  }
+}

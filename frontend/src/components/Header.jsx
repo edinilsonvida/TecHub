@@ -78,13 +78,17 @@ export default function Header() {
           </nav>
 
           <div className="site-header__actions">
-            <button
-              type="button"
-              className="site-header__login"
-              disabled
+            <NavLink
+              to="/login"
+              className={({ isActive }) =>
+                `site-header__login${
+                  isActive ? " is-active" : ""
+                }`
+              }
+              onClick={closeMenu}
             >
               Entrar
-            </button>
+            </NavLink>
 
             <NavLink
               to="/cadastro"
