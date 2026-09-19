@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import "./LoginPage.css";
 
@@ -35,6 +35,8 @@ export default function LoginPage() {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -47,12 +49,13 @@ export default function LoginPage() {
     setErrors((currentErrors) => ({
       ...currentErrors,
       [name]: "",
+      general: "",
     }));
 
     setSuccessMessage("");
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const validationErrors = validateForm(form);
@@ -64,9 +67,40 @@ export default function LoginPage() {
       return;
     }
 
-    setSuccessMessage(
-      "Dados validados com sucesso! A integração do login será realizada em uma próxima etapa.",
-    );
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:3001/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: form.email.trim().toLowerCase(),
+          password: form.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrors({
+          general: data.message || "Não foi possível realizar o login.",
+        });
+        return;
+      }
+
+      // Salva a sessão no navegador
+      localStorage.setItem("techub_token", data.token);
+      localStorage.setItem("techub_user", JSON.stringify(data.user));
+
+      setSuccessMessage("Login efetuado com sucesso! Redirecionando...");
+      setTimeout(() => navigate("/"), 1000);
+    } catch (err) {
+      setErrors({
+        general: "Erro ao conectar ao servidor. Verifique se o back-end está ativo.",
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

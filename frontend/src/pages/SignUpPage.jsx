@@ -57,6 +57,7 @@ export default function SignUpPage() {
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function handleAccountType(type) {
     setAccountType(type);
@@ -85,7 +86,7 @@ export default function SignUpPage() {
     setSuccessMessage("");
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const validationErrors = validateForm(form);
@@ -97,9 +98,57 @@ export default function SignUpPage() {
       return;
     }
 
-    setSuccessMessage(
-      "Dados validados com sucesso! A integração do cadastro será realizada em uma próxima etapa.",
-    );
+    setLoading(true);
+
+    // setSuccessMessage(
+    //   "Dados validados com sucesso! A integração do cadastro será realizada em uma próxima etapa.",
+    // );
+
+    try {
+      const response = await fetch("http://localhost:3001/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.username,
+          email: form.email.trim().toLowerCase(),
+          password: form.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Trata erros de validação Zod da API ou mensagens genéricas (409, 400, 503)
+        if (data.errors && data.errors.length > 0) {
+          const backendErrors = {};
+          data.errors.forEach((err) => {
+            if (err.path) backendErrors[err.path] = err.message;
+          });
+          setErrors(backendErrors);
+          return;
+        }
+
+        // Se for duplicidade (409) no e-mail
+        if (response.status === 409) {
+          setErrors({ email: data.message });
+          return;
+        }
+
+        // Outros erros (ex: 503 do banco)
+        setErrors({ general: data.message || "Erro ao realizar cadastro." });
+        return;
+      }
+
+      // Sucesso (Status 201)
+      setSuccessMessage(data.message);
+      setForm(INITIAL_FORM); // Reseta os campos do formulário
+    } catch (err) {
+      setErrors({ general: "Não foi possível conectar ao servidor. Verifique se a API está ativa." });
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -117,9 +166,8 @@ export default function SignUpPage() {
           <div className="signup-form__account-options">
             <button
               type="button"
-              className={`signup-form__account-button ${
-                accountType === "criador" ? "is-selected" : ""
-              }`}
+              className={`signup-form__account-button ${accountType === "criador" ? "is-selected" : ""
+                }`}
               onClick={() => handleAccountType("criador")}
               aria-pressed={accountType === "criador"}
             >
@@ -128,9 +176,8 @@ export default function SignUpPage() {
 
             <button
               type="button"
-              className={`signup-form__account-button ${
-                accountType === "visitante" ? "is-selected" : ""
-              }`}
+              className={`signup-form__account-button ${accountType === "visitante" ? "is-selected" : ""
+                }`}
               onClick={() => handleAccountType("visitante")}
               aria-pressed={accountType === "visitante"}
             >
@@ -297,12 +344,33 @@ export default function SignUpPage() {
           </p>
         )}
 
+        {errors.general && (
+          <span
+            className="signup-form__error"
+            role="alert"
+            style={{ marginBottom: "12px", display: "block", textAlign: "center" }}
+          >
+            {errors.general}
+          </span>
+        )}
+
+        {successMessage && (
+          <p
+            className="signup-form__success"
+            role="status"
+            aria-live="polite"
+          >
+            {successMessage}
+          </p>
+        )}
+
         <div className="signup-form__actions">
           <button
             type="submit"
             className="signup-form__submit"
+            disabled={loading}
           >
-            Criar conta
+            {loading ? "Criando conta..." : "Criar conta"}
           </button>
 
           <p className="signup-form__login">
