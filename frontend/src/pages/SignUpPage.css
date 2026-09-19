@@ -1,14 +1,17 @@
 .signup-page {
   min-height: calc(100vh - 60px);
   padding: 1.5rem 1.5rem 5rem;
+
   display: flex;
   flex-direction: column;
   align-items: center;
+
   background: #18191a;
 }
 
 .signup-page__title {
   margin: 0 0 2.25rem;
+
   color: #ffffff;
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 800;
@@ -20,26 +23,34 @@
   width: 100%;
   max-width: 560px;
   padding: 2rem 2.25rem 2.25rem;
+
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+
   background: #222426;
+  border: 1px solid #2d2f33;
   border-radius: 18px;
 }
+
+/* Tipo de conta */
 
 .signup-form__account-type {
   margin: 0;
   padding: 0;
-  border: 0;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.875rem;
+
+  border: 0;
 }
 
 .signup-form__account-type legend {
   width: 100%;
   margin-bottom: 0.875rem;
+
   color: #ffffff;
   font-size: 0.9375rem;
   font-weight: 600;
@@ -47,9 +58,11 @@
 }
 
 .signup-form__account-options {
-  padding: 3px;
+  padding: 4px;
+
   display: flex;
-  gap: 3px;
+  gap: 4px;
+
   background: #1a1e1a;
   border: 1px solid #2d2f33;
   border-radius: 10px;
@@ -57,19 +70,41 @@
 
 .signup-form button.signup-form__account-button {
   padding: 0.5rem 1.75rem;
-  background: transparent;
-  border: 0;
+
+  background-color: transparent !important;
+  border: 0 !important;
   border-radius: 8px;
-  box-shadow: none;
-  color: #9fa0a1;
+  box-shadow: none !important;
+
+  color: #9fa0a1 !important;
+  font-family: inherit;
   font-size: 0.9rem;
   font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
 }
 
 .signup-form button.signup-form__account-button.is-selected {
-  background: #78dc50;
-  color: #111111;
+  background-color: #78dc50 !important;
+  color: #111111 !important;
 }
+
+.signup-form
+  button.signup-form__account-button:not(.is-selected):hover {
+  background-color: #2b302c !important;
+  color: #ffffff !important;
+}
+
+.signup-form button.signup-form__account-button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Campos */
 
 .signup-form__field {
   display: flex;
@@ -77,25 +112,38 @@
   gap: 0.4375rem;
 }
 
-.signup-form__field label {
+.signup-form .signup-form__field label {
+  width: fit-content;
+
+  display: inline-flex;
+  flex-direction: row;
+  align-items: baseline;
+  align-self: flex-start;
+  gap: 0.25rem;
+
   color: #9a9ea4;
   font-size: 0.9rem;
   font-weight: 600;
 }
 
-.signup-form__field label span {
+.signup-form .signup-form__field label span {
   color: #e53935;
 }
 
 .signup-form__field input {
   width: 100%;
+  min-height: 48px;
   padding: 0.75rem 0.875rem;
+
   background: #1e2022;
   border: 1.5px solid #33363a;
   border-radius: 9px;
+
   color: #ffffff;
+  font-family: inherit;
   font-size: 0.9375rem;
   outline: none;
+
   transition:
     border-color 160ms ease,
     box-shadow 160ms ease;
@@ -110,9 +158,16 @@
   border-color: #e53935;
 }
 
+.signup-form__field input.is-invalid:focus {
+  border-color: #e53935;
+  box-shadow: 0 0 0 3px rgb(229 57 53 / 12%);
+}
+
 .signup-form__field input::placeholder {
   color: #60646c;
 }
+
+/* Mensagens */
 
 .signup-form__helper {
   color: #9fa0a1;
@@ -128,59 +183,112 @@
 .signup-form__success {
   margin: 0;
   padding: 0.75rem;
+
   background: rgb(120 220 80 / 10%);
   border: 1px solid #78dc50;
   border-radius: 8px;
+
   color: #9bea7b;
   font-size: 0.85rem;
+  line-height: 1.5;
   text-align: center;
 }
 
+/* Ações */
+
 .signup-form__actions {
   margin-top: 0.25rem;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
 }
 
-.signup-form button.signup-form__submit {
-  width: 170px;
-  padding: 0.8125rem;
-  background: #78dc50;
-  border: 0;
+/* Botão Criar conta */
+
+.signup-page .signup-form button.signup-form__submit {
+  width: 170px !important;
+  min-height: 46px;
+  padding: 0.75rem 1rem;
+
+  background-color: #78dc50 !important;
+  border: 1px solid #78dc50 !important;
   border-radius: 10px;
-  color: #111111;
+  box-shadow: none !important;
+
+  color: #101210 !important;
+  font-family: inherit;
   font-size: 1rem;
   font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
 }
 
-.signup-form button.signup-form__submit:hover {
-  background: #6fd047;
+.signup-page .signup-form button.signup-form__submit:hover {
+  background-color: #5fd936 !important;
+  border-color: #5fd936 !important;
+  color: #081006 !important;
+
+  box-shadow:
+    0 0 0 4px rgb(95 217 54 / 18%),
+    0 6px 18px rgb(0 0 0 / 20%) !important;
+
+  transform: translateY(-2px);
 }
+
+.signup-page .signup-form button.signup-form__submit:active {
+  background-color: #52c52d !important;
+  border-color: #52c52d !important;
+  box-shadow: none !important;
+
+  transform: translateY(0);
+}
+
+.signup-page .signup-form button.signup-form__submit:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+/* Link para login */
 
 .signup-form__login {
   margin: 0;
+
   color: #9fa0a1;
   font-size: 0.9rem;
   text-align: center;
 }
 
-.signup-form__login button {
+.signup-form__login a {
   padding: 0;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+
   color: #ffffff;
   font-size: inherit;
   font-weight: 500;
   text-decoration: underline;
+
+  transition: color 160ms ease;
 }
 
-.signup-form__login button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
+.signup-form__login a:hover {
+  color: #78dc50;
 }
+
+.signup-form__login a:focus-visible {
+  outline: 2px solid #78dc50;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Responsividade */
 
 @media (max-width: 600px) {
   .signup-page {
@@ -204,7 +312,7 @@
     padding-inline: 0.75rem;
   }
 
-  .signup-form button.signup-form__submit {
-    width: 100%;
+  .signup-page .signup-form button.signup-form__submit {
+    width: 100% !important;
   }
 }
