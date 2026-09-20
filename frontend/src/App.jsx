@@ -2,20 +2,11 @@ import { Route, Routes } from "react-router-dom";
 
 import EmptyState from "./components/EmptyState";
 import Header from "./components/Header";
-import PrivateRoute from "./components/PrivateRoute";
 
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
-import Favorites from "./pages/Favorites";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import NewProjectPage from "./pages/NewProjectPage";
-import OrderDetail from "./pages/OrderDetail";
-import Orders from "./pages/Orders";
-import ProductDetail from "./pages/ProductDetail";
-import Profile from "./pages/Profile";
 import ProjectsPage from "./pages/ProjectsPage";
-import Register from "./pages/Register";
 import SignUpPage from "./pages/SignUpPage";
 
 export default function App() {
@@ -32,18 +23,6 @@ export default function App() {
 
           <Route path="/cadastro" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
-
-          <Route path="/register" element={<Register />} />
-          <Route path="/products/:id" element={<ProductDetail />} />
-
-          <Route element={<PrivateRoute />}>
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/orders/:id" element={<OrderDetail />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/favorites" element={<Favorites />} />
-          </Route>
 
           <Route
             path="*"
