@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import "./ProjectsPage.css";
 
@@ -552,10 +552,12 @@ function FilterTag({ label, type, onRemove }) {
 }
 
 function ProjectCard({ project }) {
-  const navigate = useNavigate();
-
   return (
-    <article className="project-card">
+    <Link
+      to={`/projetos/${project.id}`}
+      className="project-card"
+      aria-label={`Ver detalhes do projeto ${project.title}`}
+    >
       <div
         className="project-card__image"
         style={{ backgroundColor: project.color }}
@@ -580,22 +582,16 @@ function ProjectCard({ project }) {
           </div>
         </div>
 
-        <div className="project-card__tags" aria-label="Tecnologias do projeto">
+        <div
+          className="project-card__tags"
+          aria-label="Tecnologias do projeto"
+        >
           {project.tags.map((tag) => (
             <span key={tag}>{tag}</span>
           ))}
         </div>
-
-        <button
-          type="button"
-          className="project-card__details"
-          onClick={() => navigate(`/projetos/${project.id}`)}
-          aria-label={`Ver detalhes do projeto ${project.title}`}
-        >
-          Ver projeto
-        </button>
       </div>
-    </article>
+    </Link>
   );
 }
 
