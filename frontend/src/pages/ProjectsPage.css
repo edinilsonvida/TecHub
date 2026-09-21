@@ -385,6 +385,9 @@
   background-color: #18191a;
   border: 2px solid #36393d;
   border-radius: 14px;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
   transition:
     border-color 180ms ease,
     transform 180ms ease,
@@ -392,9 +395,17 @@
 }
 
 .project-card:hover {
-  border-color: var(--tc-green);
+  border-color: var(--tc-green, #78dc50);
   box-shadow: 0 10px 28px rgb(0 0 0 / 28%);
+  color: inherit;
+  text-decoration: none;
   transform: translateY(-4px);
+}
+
+.project-card:focus-visible {
+  border-color: var(--tc-green, #78dc50);
+  outline: 3px solid rgb(120 220 80 / 28%);
+  outline-offset: 3px;
 }
 
 .project-card__image {
@@ -501,14 +512,24 @@
 }
 
 .project-card__avatar {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   display: grid;
   flex-shrink: 0;
   place-items: center;
+  margin: 0;
+  overflow: hidden;
   background-color: #34373a;
+  border: 1px solid #484c50;
   border-radius: 50%;
-  color: #94999e;
+  color: #b5b9bd;
+  line-height: 1;
+}
+
+.project-card__avatar svg {
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 .project-card__author div {
@@ -525,7 +546,7 @@
   white-space: nowrap;
 }
 
-.project-card__author span {
+.project-card__author > div > span {
   display: block;
   margin-top: 0.15rem;
   overflow: hidden;
@@ -548,38 +569,6 @@
   color: var(--tc-green);
   font-size: 0.65rem;
   font-weight: 600;
-}
-
-.projects-page button.project-card__details {
-  width: 100%;
-  margin-top: auto;
-  padding: 0.625rem;
-  appearance: none;
-  background: var(--tc-green, #78dc50) !important;
-  border: 1px solid var(--tc-green, #78dc50) !important;
-  border-radius: 8px;
-  box-shadow: none !important;
-  color: #111111 !important;
-  font-family: inherit;
-  font-size: 0.8rem;
-  font-weight: 700;
-  cursor: pointer;
-  opacity: 1;
-  transition:
-    background-color 160ms ease,
-    border-color 160ms ease,
-    transform 160ms ease;
-}
-
-.projects-page button.project-card__details:hover {
-  background: #8ae667 !important;
-  border-color: #8ae667 !important;
-  transform: translateY(-1px);
-}
-
-.projects-page button.project-card__details:focus-visible {
-  outline: 3px solid rgb(120 220 80 / 25%);
-  outline-offset: 2px;
 }
 
 .projects-page__empty {

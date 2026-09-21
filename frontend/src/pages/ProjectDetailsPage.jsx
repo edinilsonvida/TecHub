@@ -337,38 +337,6 @@ export default function ProjectDetailsPage() {
                 ))}
               </div>
             </section>
-
-            <section className="project-details-card project-details-sidebar__section">
-              <h2>Links úteis</h2>
-
-              <div className="project-details-links">
-                <a
-                  href={PROJECT.github}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <i
-                    className="fa-brands fa-github"
-                    aria-hidden="true"
-                  />
-
-                  Código no GitHub
-                </a>
-
-                <a
-                  href={PROJECT.demo}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <i
-                    className="fa-solid fa-globe"
-                    aria-hidden="true"
-                  />
-
-                  Demonstração
-                </a>
-              </div>
-            </section>
           </aside>
         </div>
       </div>
