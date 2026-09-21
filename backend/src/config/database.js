@@ -1,4 +1,5 @@
 const { Sequelize } = require('sequelize');
+const pg = require('pg');
 const config = require('./config');
 
 const env = process.env.NODE_ENV || 'development';
@@ -12,6 +13,7 @@ const sequelize = new Sequelize(
     host: dbConfig.host,
     port: dbConfig.port,
     dialect: dbConfig.dialect,
+    dialectModule: dbConfig.dialect === 'postgres' ? pg : undefined,
     logging: dbConfig.logging,
     dialectOptions: dbConfig.dialectOptions,
   }
