@@ -2,6 +2,8 @@ const { User } = require('../models');
 const { signToken } = require('../utils/jwt');
 const { registerSchema, loginSchema, updateProfileSchema } = require('../validators/authValidators');
 const { ApiError } = require('../middlewares/errorHandler');
+const crypto = require('crypto');
+const { sendVerificationEmail } = require('../services/mailService');
 
 // Mantém o formato de erro existente sem registrar SQL ou valores de credenciais.
 function handleAuthError(err, res, next) {
@@ -26,6 +28,10 @@ async function register(req, res, next) {
       return res.status(409).json({ message: 'Já existe uma conta com este e-mail.' });
     }
 
+    // Gera token seguro e define validade de 24h
+    // const verificationToken = crypto.randomBytes(32).toString('hex');
+    // const tokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
     // Compatibilidade temporária com o ENUM existente, sem alterar o banco.
     // Nunca aceite role do cliente nem atribua seller/admin no cadastro público.
     const user = await User.create({
@@ -33,14 +39,18 @@ async function register(req, res, next) {
       email: data.email.toLowerCase(),
       password: data.password,
       role: 'customer',
+      // isEmailVerified: false,
+      // emailVerificationToken: verificationToken,
+      // emailVerificationExpires: tokenExpires,
     });
 
-    const token = signToken({ sub: user.id, role: user.role });
+    // Envia o e-mail ANTES de responder a requisição
+    //await sendVerificationEmail(user.email, verificationToken);
 
+    // Responde sem token de sessão (exige confirmação antes do login)
     res.status(201).json({
-      message: 'Cadastro realizado com sucesso!',
+      message: 'Cadastro realizado! Verifique seu e-mail em até 24 horas para ativar sua conta.',
       user: user.toSafeJSON(),
-      token,
     });
   } catch (err) {
     handleAuthError(err, res, next);
@@ -66,6 +76,12 @@ async function login(req, res, next) {
     if (!valid) {
       return res.status(401).json(genericError);
     }
+
+    // if (!user.isEmailVerified) {
+    //   return res.status(403).json({
+    //     message: 'Confirme seu e-mail antes de acessar a plataforma.'
+    //   });
+    // }
 
     const token = signToken({ sub: user.id, role: user.role });
     res.json({ user: user.toSafeJSON(), token });

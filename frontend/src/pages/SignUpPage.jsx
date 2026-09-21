@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import { useAuth } from "../context/AuthContext";
 import "./SignUpPage.css";
 
 const INITIAL_FORM = {
@@ -54,8 +53,6 @@ function validateForm(form) {
 }
 
 export default function SignUpPage() {
-  const { register } = useAuth();
-  const navigate = useNavigate();
   const [accountType, setAccountType] = useState("criador");
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
@@ -103,34 +100,52 @@ export default function SignUpPage() {
 
     setLoading(true);
 
+    // setSuccessMessage(
+    //   "Dados validados com sucesso! A integração do cadastro será realizada em uma próxima etapa.",
+    // );
+
     try {
-      const data = await register({
-        name: form.username,
-        email: form.email.trim().toLowerCase(),
-        password: form.password,
+      const response = await fetch("http://localhost:3001/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.username,
+          email: form.email.trim().toLowerCase(),
+          password: form.password,
+        }),
       });
 
-      setSuccessMessage(data.message || "Cadastro realizado com sucesso!");
-      setForm(INITIAL_FORM);
-      setTimeout(() => navigate("/"), 1000);
-    } catch (err) {
-      const data = err.response?.data;
+      const data = await response.json();
 
-      if (data?.errors?.length > 0) {
-        const backendErrors = {};
-        data.errors.forEach((backendError) => {
-          if (backendError.path) backendErrors[backendError.path] = backendError.message;
-        });
-        setErrors(backendErrors);
-      } else if (err.response?.status === 409) {
-        setErrors({ email: data.message });
-      } else {
-        setErrors({
-          general:
-            data?.message ||
-            "Não foi possível conectar ao servidor. Verifique se a API está ativa.",
-        });
+      if (!response.ok) {
+        // Trata erros de validação Zod da API ou mensagens genéricas (409, 400, 503)
+        if (data.errors && data.errors.length > 0) {
+          const backendErrors = {};
+          data.errors.forEach((err) => {
+            if (err.path) backendErrors[err.path] = err.message;
+          });
+          setErrors(backendErrors);
+          return;
+        }
+
+        // Se for duplicidade (409) no e-mail
+        if (response.status === 409) {
+          setErrors({ email: data.message });
+          return;
+        }
+
+        // Outros erros (ex: 503 do banco)
+        setErrors({ general: data.message || "Erro ao realizar cadastro." });
+        return;
       }
+
+      // Sucesso (Status 201)
+      setSuccessMessage(data.message);
+      setForm(INITIAL_FORM); // Reseta os campos do formulário
+    } catch (err) {
+      setErrors({ general: "Não foi possível conectar ao servidor. Verifique se a API está ativa." });
     } finally {
       setLoading(false);
     }
@@ -318,6 +333,16 @@ export default function SignUpPage() {
             </span>
           )}
         </div>
+
+        {successMessage && (
+          <p
+            className="signup-form__success"
+            role="status"
+            aria-live="polite"
+          >
+            {successMessage}
+          </p>
+        )}
 
         {errors.general && (
           <span
