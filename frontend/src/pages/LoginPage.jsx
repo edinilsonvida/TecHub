@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import { useAuth } from "../context/AuthContext";
 import "./LoginPage.css";
 
 const INITIAL_FORM = {
@@ -31,6 +32,7 @@ function validateForm(form) {
 }
 
 export default function LoginPage() {
+  const { login } = useAuth();
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -70,33 +72,18 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3001/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: form.email.trim().toLowerCase(),
-          password: form.password,
-        }),
+      await login({
+        email: form.email.trim().toLowerCase(),
+        password: form.password,
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setErrors({
-          general: data.message || "Não foi possível realizar o login.",
-        });
-        return;
-      }
-
-      // Salva a sessão no navegador
-      localStorage.setItem("techub_token", data.token);
-      localStorage.setItem("techub_user", JSON.stringify(data.user));
 
       setSuccessMessage("Login efetuado com sucesso! Redirecionando...");
       setTimeout(() => navigate("/"), 1000);
     } catch (err) {
       setErrors({
-        general: "Erro ao conectar ao servidor. Verifique se o back-end está ativo.",
+        general:
+          err.response?.data?.message ||
+          "Erro ao conectar ao servidor. Verifique se o back-end está ativo.",
       });
     } finally {
       setLoading(false);
@@ -224,9 +211,15 @@ export default function LoginPage() {
           </p>
         )}
 
+        {errors.general && (
+          <p className="login-form__error" role="alert">
+            {errors.general}
+          </p>
+        )}
+
         <div className="login-form__actions">
-          <button type="submit" className="login-form__submit">
-            Entrar
+          <button type="submit" className="login-form__submit" disabled={loading}>
+            {loading ? "Entrando..." : "Entrar"}
           </button>
 
           <p className="login-form__signup">

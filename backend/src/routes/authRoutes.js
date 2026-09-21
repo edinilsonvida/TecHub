@@ -19,7 +19,7 @@ const authLimiter = rateLimit({
  *   post:
  *     tags: [Auth]
  *     summary: Cadastro básico Tech Hub (protótipo parcial)
- *     description: Exige nome por compatibilidade com a tabela herdada. Papel customer fixado pelo servidor. Retorna JWT sem confirmação de e-mail; domínio institucional ainda não validado.
+ *     description: Exige nome por compatibilidade com a tabela herdada. Papel customer fixado pelo servidor. Cria a conta e inicia a sessão sem confirmação de e-mail nesta etapa.
  *     requestBody:
  *       required: true
  *       content:
@@ -27,7 +27,7 @@ const authLimiter = rateLimit({
  *           schema: { $ref: '#/components/schemas/RegisterInput' }
  *     responses:
  *       201:
- *         description: Conta criada e JWT emitido (sem confirmação de e-mail neste protótipo)
+ *         description: Conta criada e JWT emitido
  *         content:
  *           application/json:
  *             schema: { $ref: '#/components/schemas/AuthResponse' }

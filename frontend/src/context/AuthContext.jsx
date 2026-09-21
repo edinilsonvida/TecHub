@@ -34,10 +34,11 @@ export function AuthProvider({ children }) {
 
   // Cria a conta, armazena o token recebido e inicia a sessão.
   const register = useCallback(async (payload) => {
-    const { user: newUser, token } = await registerUser(payload);
+    const response = await registerUser(payload);
+    const { user: newUser, token } = response;
     localStorage.setItem('token', token);
     setUser(newUser);
-    return newUser;
+    return response;
   }, []);
 
   // Remove os dados locais de autenticação e encerra a sessão atual.
