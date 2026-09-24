@@ -2,6 +2,8 @@ const { User } = require('../models');
 const { signToken } = require('../utils/jwt');
 const { registerSchema, loginSchema, updateProfileSchema } = require('../validators/authValidators');
 const { ApiError } = require('../middlewares/errorHandler');
+const { ROLES } = require('../constants/roles');
+const { isCreatorEmailAllowed, getCreatorAllowedDomains } = require('../config/creatorDomain');
 
 // Mantém o formato de erro existente sem registrar SQL ou valores de credenciais.
 function handleAuthError(err, res, next) {
@@ -26,13 +28,13 @@ async function register(req, res, next) {
       return res.status(409).json({ message: 'Já existe uma conta com este e-mail.' });
     }
 
-    // Compatibilidade temporária com o ENUM existente, sem alterar o banco.
-    // Nunca aceite role do cliente nem atribua seller/admin no cadastro público.
+    // accountType foi validado contra a lista pública; role nunca é aceito diretamente.
+    // Assim, ninguém consegue criar um super_admin pela API pública.
     const user = await User.create({
       name: data.name,
       email: data.email,
       password: data.password,
-      role: 'customer',
+      role: data.accountType,
     });
     const token = signToken({ sub: user.id, role: user.role });
 
@@ -83,6 +85,13 @@ async function updateProfile(req, res, next) {
     }
 
     if (data.email && data.email.toLowerCase() !== user.email) {
+      if (user.role === ROLES.CREATOR && !isCreatorEmailAllowed(data.email)) {
+        throw new ApiError(
+          400,
+          `Contas de criador exigem um destes domínios institucionais: ${getCreatorAllowedDomains().join(', ')}.`
+        );
+      }
+
       const existing = await User.findOne({ where: { email: data.email.toLowerCase() } });
       if (existing) {
         return res.status(409).json({ message: 'Já existe uma conta com este e-mail.' });
